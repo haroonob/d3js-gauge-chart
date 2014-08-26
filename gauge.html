@@ -1,0 +1,82 @@
+
+<html>
+  	<head>
+    	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    	<title>d3.js gauges</title>
+		
+		<style>
+		
+			body
+			{
+			  	font: 10px arial;
+			}
+			
+		</style>
+		
+		<script type="text/javascript" src="d3.js"></script>
+		<script type="text/javascript" src="gauge.js"></script>
+ 
+		<script>
+						
+				
+			var gauges = [];
+			
+			function createGauge(name, label, min, max)
+			{
+				var config = 
+				{
+					size: 540,
+					label: label,
+					min: undefined != min ? min : 0,
+					max: undefined != max ? max : 100,
+					minorTicks: 5
+				}
+				
+				var range = config.max - config.min;
+				config.greenZones = [{ from: 0, to: 75 }];
+				config.yellowZones = [{ from: 75, to: 90 }];
+				config.redZones = [{ from: 90, to: 100}];
+				console.log(config);
+				gauges[name] = new Gauge(name + "GaugeContainer", config);
+				gauges[name].render();
+			}
+			
+			function createGauges()
+			{
+				createGauge("leadindicator", "Leading Indicator");
+				
+			}
+			
+			function updateGauges()
+			{
+				for (var key in gauges)
+				{
+					var value = getRandomValue(gauges[key])
+					gauges[key].redraw(55);
+				}
+			}
+			
+			function getRandomValue(gauge)
+			{
+				var overflow = 0; //10;
+				return gauge.config.min - overflow + (gauge.config.max - gauge.config.min + overflow*2) *  Math.random();
+			}
+			
+			function initialize()
+			{
+				createGauges();
+				setInterval(updateGauges, 1000);
+			}
+			
+		</script>
+		
+		
+	</head>
+	
+	<body onload="initialize()">
+		<center><h1>Lead Indicator </h1></center>
+		<center><span id="leadindicatorGaugeContainer"></span></center>
+		
+	</body>
+	
+</html>
